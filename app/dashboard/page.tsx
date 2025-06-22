@@ -190,16 +190,15 @@ export default function DashboardPage() {
           <div className="flex items-center gap-4">
             <div className="h-12 w-12 relative overflow-hidden rounded-full border-2 border-blue-500 flex items-center justify-center bg-white">
               <Image 
-                src="/logo/505475357_778369911241595_2236897200594352465_n.png"
-                alt="Company Logo"
+                src="/logo/logo.png"
+                alt="BIZCO Logo"
                 width={40}
                 height={40}
                 className="object-contain"
               />
             </div>
             <div>
-              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">{companyName}</h1>
-              <p className="text-sm text-gray-500 dark:text-gray-400">AI Business Coach</p>
+              <h1 className="text-xl font-bold text-gray-900 dark:text-white">bizco.np</h1>
             </div>
           </div>
           <div className="flex items-center gap-3">

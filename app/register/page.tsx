@@ -4,6 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
@@ -13,7 +14,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Factory, AlertCircle } from "lucide-react"
+import { AlertCircle } from "lucide-react"
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -110,9 +111,17 @@ export default function RegisterPage() {
       <Card className="w-full max-w-2xl dark:bg-gray-800 dark:border-gray-700">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <Factory className="h-12 w-12 text-purple-600 dark:text-purple-400" />
+            <div className="h-16 w-16 relative overflow-hidden">
+              <Image 
+                src="/logo/logo.png"
+                alt="bizco.np Logo"
+                width={64}
+                height={64}
+                className="object-contain"
+              />
+            </div>
           </div>
-          <CardTitle className="text-2xl dark:text-white">Join ProductionCoach AI</CardTitle>
+          <CardTitle className="text-2xl dark:text-white">Join bizco.np</CardTitle>
           <CardDescription className="dark:text-gray-400">Register your production business for AI-powered coaching and insights</CardDescription>
         </CardHeader>
         <CardContent>

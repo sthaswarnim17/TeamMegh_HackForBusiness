@@ -4,6 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
@@ -11,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Factory, AlertCircle } from "lucide-react"
+import { AlertCircle } from "lucide-react"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -64,10 +65,18 @@ export default function LoginPage() {
       <Card className="w-full max-w-md dark:bg-gray-800 dark:border-gray-700">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <Factory className="h-12 w-12 text-purple-600 dark:text-purple-400" />
+            <div className="h-16 w-16 relative overflow-hidden">
+              <Image 
+                src="/logo/logo.png"
+                alt="bizco.np Logo"
+                width={64}
+                height={64}
+                className="object-contain"
+              />
+            </div>
           </div>
           <CardTitle className="text-2xl dark:text-white">Welcome Back</CardTitle>
-          <CardDescription className="dark:text-gray-400">Sign in to your ProductionCoach AI account</CardDescription>
+          <CardDescription className="dark:text-gray-400">Sign in to your bizco.np account</CardDescription>
         </CardHeader>
         <CardContent>
           {error && (

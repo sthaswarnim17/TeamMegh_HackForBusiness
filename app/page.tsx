@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -11,8 +12,17 @@ export default function HomePage() {
       <header className="border-b bg-white/80 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <Factory className="h-8 w-8 text-purple-600" />
-            <h1 className="text-2xl font-bold text-gray-900">ProductionCoach AI</h1>
+            <div className="h-10 w-10 relative overflow-hidden">
+              <Image 
+                src="/logo/logo.png"
+                alt="BIZCO Logo"
+                width={40}
+                height={40}
+                className="object-contain"
+
+              />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900">bizco.np</h1>
           </div>
           <div className="flex gap-4">
             <Link href="/login">
