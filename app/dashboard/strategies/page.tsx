@@ -611,7 +611,7 @@ export default function StrategiesPage() {
       
       // Log the selected dataset for debugging
       console.log("Generating strategies for dataset ID:", selectedDataset);
-      const selectedData = userDatasets.find((dataset: any) => 
+      const selectedData = userDatasets.find((dataset) => 
         dataset.id.toString() === selectedDataset.toString()
       );
       console.log("Selected dataset:", selectedData?.data_name || "Not found");
@@ -696,8 +696,8 @@ export default function StrategiesPage() {
           console.log("Received strategies:", data.strategies);
           
           // Transform the AI strategies to match our UI format
-          const formattedStrategies = data.strategies.map((strategy: any, index: number) => {
-            const formattedStrategy: Strategy = {
+          const formattedStrategies = data.strategies.map((strategy, index) => {
+            const formattedStrategy = {
               id: Date.now() + index,
               name: strategy.name || `Strategy ${index + 1}`,
               description: strategy.objectives ? (strategy.objectives.split('.')[0] + '.') : "Improve business outcomes through targeted marketing.",
@@ -724,6 +724,63 @@ export default function StrategiesPage() {
             };
             return formattedStrategy;
           });
+          
+          // Automatically save all generated strategies to the database
+          try {
+            console.log(`Auto-saving ${formattedStrategies.length} AI-generated strategies...`);
+            
+            // Save each strategy in parallel
+            await Promise.all(formattedStrategies.map(async (strategy) => {
+              // Prepare strategy data for saving
+              const strategyData = {
+                dataId: selectedDataset,
+                analysisType: 'strategy_draft',
+                analysisContent: JSON.stringify({
+                  strategy: {
+                    ...strategy,
+                    status: "Draft",
+                    progress: 0,
+                    savedAt: new Date().toISOString(),
+                    metrics: {
+                      reach: "TBD",
+                      engagement: "TBD",
+                      conversion: "TBD",
+                      revenue: "TBD",
+                    }
+                  }
+                })
+              };
+              
+              try {
+                // Save to database
+                const response = await fetch('http://localhost:5000/api/analysis', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                  },
+                  body: JSON.stringify(strategyData)
+                });
+                
+                if (response.ok) {
+                  const savedData = await response.json();
+                  console.log(`Strategy "${strategy.name}" auto-saved with ID: ${savedData.id}`);
+                  
+                  // Update the strategy with the database ID
+                  strategy.dbId = savedData.id;
+                } else {
+                  console.error(`Failed to auto-save strategy "${strategy.name}":`, await response.text());
+                }
+              } catch (saveError) {
+                console.error(`Error auto-saving strategy "${strategy.name}":`, saveError);
+              }
+            }));
+            
+            console.log("Auto-save complete");
+          } catch (autoSaveError) {
+            console.error("Error during auto-save process:", autoSaveError);
+            // Continue execution - don't block the UI for auto-save errors
+          }
           
           // Set AI strategies and switch to AI tab
           setAiStrategies(formattedStrategies);
@@ -753,7 +810,7 @@ export default function StrategiesPage() {
                 .map(s => s.dbId));
               
               // Filter out saved strategies that are already in the list
-              const newSavedStrategies = savedStrategiesList.filter((s: any) => 
+              const newSavedStrategies = savedStrategiesList.filter(s => 
                 !existingIds.has(s.id) && !existingDbIds.has(s.dbId)
               );
               
@@ -800,7 +857,7 @@ export default function StrategiesPage() {
                 .filter(s => s.dbId)
                 .map(s => s.dbId));
               
-              const newSavedStrategies = savedStrategiesList.filter((s: any) => 
+              const newSavedStrategies = savedStrategiesList.filter(s => 
                 !existingIds.has(s.id) && !existingDbIds.has(s.dbId)
               );
               
@@ -812,7 +869,7 @@ export default function StrategiesPage() {
             });
           }
         }
-      } catch (fetchError: any) {
+      } catch (fetchError) {
         if (fetchError.name === 'AbortError') {
           setAnalysisError("Request timed out. The server took too long to respond.");
         } else {
@@ -831,7 +888,7 @@ export default function StrategiesPage() {
               .filter(s => s.dbId)
               .map(s => s.dbId));
             
-            const newSavedStrategies = savedStrategiesList.filter((s: any) => 
+            const newSavedStrategies = savedStrategiesList.filter(s => 
               !existingIds.has(s.id) && !existingDbIds.has(s.dbId)
             );
             
@@ -843,15 +900,10 @@ export default function StrategiesPage() {
           });
         }
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error generating strategies:", error);
-      setAnalysisError(`Error: ${error.message || "Unknown error occurred"}`);
-      
-      // Show default strategies even if there's an error
-      const selectedData = userDatasets.find((dataset: any) => 
-        dataset.id.toString() === selectedDataset.toString()
-      );
-      setDefaultStrategies(selectedData);
+      setAnalysisError(`Error: ${error.message}`);
+      setDefaultStrategies(null);
     } finally {
       setIsAnalyzing(false);
     }
@@ -1507,7 +1559,7 @@ export default function StrategiesPage() {
                           className="flex-1"
                           onClick={() => handleSaveAsDraft(strategy)}
                         >
-                          Save as Draft
+                          {strategy.dbId ? 'Update Draft' : 'Save as Draft'}
                         </Button>
                         <Button 
                           variant="outline" 
